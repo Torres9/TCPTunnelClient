@@ -8,6 +8,8 @@ public class ConfigReader {
     private static final Properties props = load();
     public static final String TCP_TUNNEL_SERVER =
             props.getProperty("tcp_tunnel_server");
+    public static final int LISTENING_PORT =
+            Integer.parseInt(props.getProperty("listening_port"));
 
     private static Properties load() {
         Properties props = new Properties();

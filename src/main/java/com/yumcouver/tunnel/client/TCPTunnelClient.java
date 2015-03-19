@@ -14,7 +14,7 @@ public class TCPTunnelClient {
     public static final boolean PROMPT = true;
     private static final String VERSION = "0.1.0-SNAPSHOT";
     public static final String SERVER_URI = ConfigReader.TCP_TUNNEL_SERVER;
-    public static int DEFAULT_PORT = 8511;
+    public static int DEFAULT_PORT = ConfigReader.LISTENING_PORT;
 
     private static final Logger LOGGER = LogManager.getLogger(TCPTunnelClient.class);
     private static TCPTunnelClient ourInstance = new TCPTunnelClient();
