@@ -12,8 +12,6 @@ import java.io.InputStreamReader;
 public class TCPTunnelClient {
     public static final boolean DEBUG_MODE = true;
     private static final String VERSION = "0.1.0-SNAPSHOT";
-    public static final String SERVER_URI = ConfigReader.TCP_TUNNEL_SERVER;
-    public static int DEFAULT_PORT = ConfigReader.LISTENING_PORT;
 
     private static final Logger LOGGER = LogManager.getLogger(TCPTunnelClient.class);
     private static TCPTunnelClient ourInstance = new TCPTunnelClient();
@@ -33,9 +31,9 @@ public class TCPTunnelClient {
         listeningServer.closeConnection();
     }
 
-    public void openConnection(String destinationId, int port) {
+    public void openConnection(String destinationId, String destinationIp, int port) {
         System.out.print(">>> ");
-        listeningServer.openConnection(destinationId, port);
+        listeningServer.openConnection(destinationId, destinationIp, port);
     }
 
     public void stop() {
@@ -64,13 +62,27 @@ public class TCPTunnelClient {
             } else if (nextLine.toLowerCase().startsWith("open")) {
                 String destinationId =
                         nextLine.toLowerCase().substring(5).split("\\s+")[0];
-                try {
-                    int port = Integer.parseInt(
-                            nextLine.toLowerCase().substring(5).split("\\s+")[1]);
-                    ourInstance.openConnection(destinationId, port);
-                } catch (NumberFormatException e) {
-                    System.out.print("invalid port number\n>>> ");
-                }
+                int port = -1;
+                String destinationIp = ConfigReader.DEFAULT_DESTINATION_IP;
+                if (nextLine.toLowerCase().substring(5).split("\\s+").length == 2)
+                    try {
+                        port = Integer.parseInt(
+                                nextLine.toLowerCase().substring(5).split("\\s+")[1]);
+                    } catch (NumberFormatException e) {
+                        System.out.print("invalid port number\n>>> ");
+                        continue;
+                    }
+                else
+                    try {
+                        destinationIp =
+                                nextLine.toLowerCase().substring(5).split("\\s+")[1];
+                        port = Integer.parseInt(
+                                nextLine.toLowerCase().substring(5).split("\\s+")[2]);
+                    } catch (NumberFormatException e) {
+                        System.out.print("invalid port number\n>>> ");
+                        continue;
+                    }
+                ourInstance.openConnection(destinationId, destinationIp, port);
             } else if (nextLine.toLowerCase().equals("help")) {
                 System.out.print("open\tclose\texit\n>>> ");
             } else if (nextLine.replaceAll("\\\\s+","").equals(""))

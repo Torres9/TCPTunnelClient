@@ -25,18 +25,10 @@ public class ProxyClientHandler extends ChannelInboundHandlerAdapter {
     private final ProxyClient proxyClient;
     private ChannelHandlerContext ctx;
 
-    public static ProxyClientHandler getProxyClientHandler(String host, int port, String key) {
+    public static ProxyClientHandler getProxyClientHandler(String key) {
         ProxyClientHandler proxyClientHandler = keyProxyClientHandlerMappings.get(key);
         if (proxyClientHandler == null)
-            new ProxyClient(host, port, key);
-        while(proxyClientHandler == null) {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                LOGGER.catching(e);
-            }
-            proxyClientHandler = keyProxyClientHandlerMappings.get(key);
-        }
+            LOGGER.warn("key {} not found in mappings", key);
         return proxyClientHandler;
     }
 

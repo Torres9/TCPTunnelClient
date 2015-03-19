@@ -40,8 +40,7 @@ public class RequestHandler extends ChannelInboundHandlerAdapter {
     }
 
     @Override
-    public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        LOGGER.info(ctx.hashCode());
+    public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
         this.ctx = ctx;
         if(portConnectionMappings.size() == MAX_CONNECTION)
             ctx.close();
@@ -53,13 +52,13 @@ public class RequestHandler extends ChannelInboundHandlerAdapter {
                 break;
             }
         }
+        ListeningServer.getInstance().sendSYN(port);
         LOGGER.info("Client {} connected", port);
     }
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         final ByteBuf in = (ByteBuf) msg;
-        LOGGER.info(ctx.hashCode());
         final byte[] messageBytes = in.toString(io.netty.util.CharsetUtil.US_ASCII).getBytes();
         ListeningServer.getInstance().send(port, messageBytes);
         LOGGER.info("Received message {}", new String(messageBytes));
@@ -67,8 +66,9 @@ public class RequestHandler extends ChannelInboundHandlerAdapter {
     }
 
     @Override
-    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+    public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
         portConnectionMappings.remove(port);
+        ListeningServer.getInstance().sendFIN(port);
         LOGGER.info("Client {} closed", port);
     }
 

@@ -10,6 +10,8 @@ public class ConfigReader {
             props.getProperty("tcp_tunnel_server");
     public static final int LISTENING_PORT =
             Integer.parseInt(props.getProperty("listening_port"));
+    public static final String DEFAULT_DESTINATION_IP =
+            props.getProperty("default_destination_ip");
 
     private static Properties load() {
         Properties props = new Properties();

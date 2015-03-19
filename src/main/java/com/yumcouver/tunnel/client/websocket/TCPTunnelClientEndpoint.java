@@ -3,8 +3,10 @@ package com.yumcouver.tunnel.client.websocket;
 import com.google.protobuf.ByteString;
 import com.yumcouver.tunnel.client.TCPTunnelClient;
 import com.yumcouver.tunnel.client.protobuf.TunnelProto;
+import com.yumcouver.tunnel.client.serversocket.ProxyClient;
 import com.yumcouver.tunnel.client.serversocket.ProxyClientHandler;
 import com.yumcouver.tunnel.client.serversocket.RequestHandler;
+import com.yumcouver.tunnel.client.util.ConfigReader;
 import com.yumcouver.tunnel.client.util.Wireshark;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -45,7 +47,7 @@ public class TCPTunnelClientEndpoint {
 
     public static TCPTunnelClientEndpoint getInstance() {
         if (ourInstance == null)
-            ourInstance = new TCPTunnelClientEndpoint(TCPTunnelClient.SERVER_URI);
+            ourInstance = new TCPTunnelClientEndpoint(ConfigReader.TCP_TUNNEL_SERVER);
         return ourInstance;
     }
 
@@ -115,26 +117,37 @@ public class TCPTunnelClientEndpoint {
         if (TCPTunnelClient.DEBUG_MODE) {
             LOGGER.debug("Received message:\n{}", Wireshark.log(tunnelCommand));
         }
+        int sourcePort = tunnelCommand.getSourcePort();
+        String sourceId = tunnelCommand.getSourceId();
         switch (tunnelCommand.getMethod()) {
             case ID:
                 setSessionId(tunnelCommand.getMessage().toStringUtf8());
                 break;
-            case SEND:
-                // TODO check if port and id is valid
-                int sourcePort = tunnelCommand.getSourcePort();
+            case SYN:
                 int destinationPort = tunnelCommand.getDestinationPort();
-                String sourceId = tunnelCommand.getSourceId();
-                String destinationId = tunnelCommand.getDestinationId();
+                String destinationIp = "127.0.0.1";
+                if(tunnelCommand.hasDestinationIP())
+                    destinationIp = tunnelCommand.getDestinationIP();
+                new ProxyClient(destinationIp, destinationPort,
+                        getKey(sourceId, sourcePort));
+                break;
+            case SEND:
                 ProxyClientHandler proxyClientHandler = ProxyClientHandler.getProxyClientHandler(
-                        "127.0.0.1",
-                        destinationPort,
                         getKey(sourceId, sourcePort)
                 );
+                assert proxyClientHandler != null;
                 proxyClientHandler.write(tunnelCommand.getMessage().toStringUtf8());
                 break;
             case ACK:
                 RequestHandler.respond(tunnelCommand.getDestinationPort(),
                         tunnelCommand.getMessage().toStringUtf8());
+                break;
+            case FIN:
+                proxyClientHandler = ProxyClientHandler.getProxyClientHandler(
+                        getKey(sourceId, sourcePort)
+                );
+                assert proxyClientHandler != null;
+                proxyClientHandler.close();
                 break;
             case ERROR:
                 LOGGER.error(tunnelCommand.getMessage().toStringUtf8());

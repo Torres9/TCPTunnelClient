@@ -3,10 +3,10 @@ package com.yumcouver.tunnel.client.serversocket;
 import com.google.protobuf.ByteString;
 import com.yumcouver.tunnel.client.TCPTunnelClient;
 import com.yumcouver.tunnel.client.protobuf.TunnelProto;
+import com.yumcouver.tunnel.client.util.ConfigReader;
 import com.yumcouver.tunnel.client.websocket.TCPTunnelClientEndpoint;
 
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
@@ -34,6 +34,7 @@ public class ListeningServer implements Runnable {
     private final EventLoopGroup workerGroup;
     private final Thread thread = new Thread(this);
     private String destinationId;
+    private String destinationIp;
     private int destinationPort;
     private final int listeningPort;
     private volatile boolean status = CLOSE;
@@ -41,7 +42,7 @@ public class ListeningServer implements Runnable {
             TCPTunnelClientEndpoint.getInstance();
 
     private ListeningServer() {
-        this(TCPTunnelClient.DEFAULT_PORT);
+        this(ConfigReader.LISTENING_PORT);
     }
 
     private ListeningServer(int listeningPort) {
@@ -70,9 +71,42 @@ public class ListeningServer implements Runnable {
                     .setSourceId(tcpTunnelClientEndpoint.getSessionId())
                     .setDestinationType(TunnelProto.TunnelCommand.EndType.CLIENT)
                     .setDestinationId(destinationId)
+                    .setDestinationIP(destinationIp)
                     .setSourcePort(sourcePort)
                     .setDestinationPort(destinationPort)
                     .setMessage(ByteString.copyFrom(message))
+                    .build();
+            tcpTunnelClientEndpoint.send(tunnelCommand);
+        }
+    }
+
+    public void sendSYN(int sourcePort) throws IOException {
+        if (status == OPEN) {
+            TunnelProto.TunnelCommand tunnelCommand = TunnelProto.TunnelCommand.newBuilder()
+                    .setMethod(TunnelProto.TunnelCommand.Method.SYN)
+                    .setSourceType(TunnelProto.TunnelCommand.EndType.CLIENT)
+                    .setSourceId(tcpTunnelClientEndpoint.getSessionId())
+                    .setDestinationType(TunnelProto.TunnelCommand.EndType.CLIENT)
+                    .setDestinationId(destinationId)
+                    .setDestinationIP(destinationIp)
+                    .setSourcePort(sourcePort)
+                    .setDestinationPort(destinationPort)
+                    .build();
+            tcpTunnelClientEndpoint.send(tunnelCommand);
+        }
+    }
+
+    public void sendFIN(int sourcePort) throws IOException {
+        if (status == OPEN) {
+            TunnelProto.TunnelCommand tunnelCommand = TunnelProto.TunnelCommand.newBuilder()
+                    .setMethod(TunnelProto.TunnelCommand.Method.FIN)
+                    .setSourceType(TunnelProto.TunnelCommand.EndType.CLIENT)
+                    .setSourceId(tcpTunnelClientEndpoint.getSessionId())
+                    .setDestinationType(TunnelProto.TunnelCommand.EndType.CLIENT)
+                    .setDestinationId(destinationId)
+                    .setDestinationIP(destinationIp)
+                    .setSourcePort(sourcePort)
+                    .setDestinationPort(destinationPort)
                     .build();
             tcpTunnelClientEndpoint.send(tunnelCommand);
         }
@@ -82,17 +116,18 @@ public class ListeningServer implements Runnable {
         status = CLOSE;
     }
 
-    public synchronized void openConnection(String destinationId, int destinationPort) {
+    public synchronized void openConnection(String destinationId, String destinationIp, int destinationPort) {
         status = OPEN;
         this.destinationId = destinationId;
         this.destinationPort = destinationPort;
+        this.destinationIp = destinationIp;
     }
 
     @Override
     public void run() {
         LOGGER.info("Thread started");
         try {
-            ChannelFuture f = serverBootstrap.bind(listeningPort).sync();
+            serverBootstrap.bind(listeningPort).sync();
             while (true) {
                 if (Thread.interrupted())
                     break;
