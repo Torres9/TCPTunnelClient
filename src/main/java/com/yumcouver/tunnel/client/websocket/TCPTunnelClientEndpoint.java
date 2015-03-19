@@ -20,7 +20,7 @@ import java.net.URISyntaxException;
 public class TCPTunnelClientEndpoint {
     private static final Logger LOGGER = LogManager.getLogger(TCPTunnelClientEndpoint.class);
     private static final String SEVER_ID = "SERVER-0000-0000-0000-000000000000";
-    private static final String UNKOWN_ID = "UNKOWN-FFFF-FFFF-FFFF-FFFFFFFFFFFF";
+    public static final String UNKOWN_ID = "UNKOWN-FFFF-FFFF-FFFF-FFFFFFFFFFFF";
     private static final String DELIMITER = "-";
 
     private static TCPTunnelClientEndpoint ourInstance = null;

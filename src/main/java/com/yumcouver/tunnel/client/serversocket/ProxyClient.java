@@ -8,9 +8,6 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.Map;
-import java.util.concurrent.*;
-
 public class ProxyClient {
     private static final Logger LOGGER = LogManager.getLogger(ProxyClient.class);
 
