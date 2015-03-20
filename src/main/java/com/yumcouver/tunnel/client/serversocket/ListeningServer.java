@@ -83,7 +83,7 @@ public class ListeningServer implements Runnable {
     public void sendSYN(int sourcePort) throws IOException {
         if (status == OPEN) {
             TunnelProto.TunnelCommand tunnelCommand = TunnelProto.TunnelCommand.newBuilder()
-                    .setMethod(TunnelProto.TunnelCommand.Method.SYN)
+                    .setMethod(TunnelProto.TunnelCommand.Method.CLIENT_SYN)
                     .setSourceType(TunnelProto.TunnelCommand.EndType.CLIENT)
                     .setSourceId(tcpTunnelClientEndpoint.getSessionId())
                     .setDestinationType(TunnelProto.TunnelCommand.EndType.CLIENT)
@@ -99,7 +99,7 @@ public class ListeningServer implements Runnable {
     public void sendFIN(int sourcePort) throws IOException {
         if (status == OPEN) {
             TunnelProto.TunnelCommand tunnelCommand = TunnelProto.TunnelCommand.newBuilder()
-                    .setMethod(TunnelProto.TunnelCommand.Method.FIN)
+                    .setMethod(TunnelProto.TunnelCommand.Method.CLIENT_FIN)
                     .setSourceType(TunnelProto.TunnelCommand.EndType.CLIENT)
                     .setSourceId(tcpTunnelClientEndpoint.getSessionId())
                     .setDestinationType(TunnelProto.TunnelCommand.EndType.CLIENT)
