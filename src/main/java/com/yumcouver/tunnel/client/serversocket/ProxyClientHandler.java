@@ -2,6 +2,7 @@ package com.yumcouver.tunnel.client.serversocket;
 
 import com.google.protobuf.ByteString;
 import com.yumcouver.tunnel.client.protobuf.TunnelProto;
+import com.yumcouver.tunnel.client.util.Wireshark;
 import com.yumcouver.tunnel.client.websocket.TCPTunnelClientEndpoint;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelFuture;
@@ -83,7 +84,7 @@ public class ProxyClientHandler extends ChannelInboundHandlerAdapter {
                 assert f == future;
             }
         });
-        LOGGER.info("Sent message {}", message.substring(10));
+        LOGGER.info("Sent message {}", Wireshark.getSubstring(message));
     }
 
      @Override
@@ -101,7 +102,7 @@ public class ProxyClientHandler extends ChannelInboundHandlerAdapter {
                 .setMessage(ByteString.copyFromUtf8(message))
                 .build();
          TCPTunnelClientEndpoint.getInstance().send(tunnelCommand);
-         LOGGER.info("Received message {}", message.substring(10));
+         LOGGER.info("Received message {}", Wireshark.getSubstring(message));
          ReferenceCountUtil.release(msg);
     }
 }

@@ -1,5 +1,6 @@
 package com.yumcouver.tunnel.client.serversocket;
 
+import com.yumcouver.tunnel.client.util.Wireshark;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
@@ -33,10 +34,10 @@ public class RequestHandler extends ChannelInboundHandlerAdapter {
     }
 
     // TODO ctx.channel
-    public void respond(String string) {
-        ChannelFuture cf = ctx.write(Unpooled.copiedBuffer(string, CharsetUtil.UTF_8));
+    public void respond(String message) {
+        ChannelFuture cf = ctx.write(Unpooled.copiedBuffer(message, CharsetUtil.UTF_8));
         ctx.flush();
-        LOGGER.info("Sent message {}", string.substring(10));
+        LOGGER.info("Sent message {}", Wireshark.getSubstring(message));
     }
 
     @Override
@@ -61,7 +62,7 @@ public class RequestHandler extends ChannelInboundHandlerAdapter {
         final ByteBuf in = (ByteBuf) msg;
         final byte[] messageBytes = in.toString(io.netty.util.CharsetUtil.US_ASCII).getBytes();
         ListeningServer.getInstance().send(port, messageBytes);
-        LOGGER.info("Received message {}", new String(messageBytes).substring(10));
+        LOGGER.info("Received message {}", Wireshark.getSubstring(new String(messageBytes)));
         ReferenceCountUtil.release(msg);
     }
 

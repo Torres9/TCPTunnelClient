@@ -6,8 +6,18 @@ import org.apache.logging.log4j.Logger;
 
 public class Wireshark {
     private static final Logger LOGGER = LogManager.getLogger(Wireshark.class);
+    private static final int DEBUG_MESSAGE_LENGTH = 10;
 
     public Wireshark() {
+    }
+
+    public static String getSubstring(String message) {
+        int length = Math.min(message.length(), DEBUG_MESSAGE_LENGTH);
+        int index = message.indexOf("\n");
+        if(index == -1)
+            return message.substring(length);
+        else
+            return message.substring(Math.min(index, length));
     }
 
     public static String log(TunnelProto.TunnelCommand tunnelCommand) {
@@ -40,7 +50,7 @@ public class Wireshark {
         if(tunnelCommand.hasMessage()) {
             String message = tunnelCommand.getMessage().toStringUtf8();
             if(!message.isEmpty()) {
-                stringBuilder.append(String.format("MESSAGE: %s\n", message.substring(10)));
+                stringBuilder.append(String.format("MESSAGE: %s\n", getSubstring(message)));
             }
         }
         stringBuilder.append(header);
