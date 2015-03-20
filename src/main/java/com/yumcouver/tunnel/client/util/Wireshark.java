@@ -15,9 +15,9 @@ public class Wireshark {
         int length = Math.min(message.length(), DEBUG_MESSAGE_LENGTH);
         int index = message.indexOf("\n");
         if(index == -1)
-            return message.substring(length);
+            return message.substring(0, length);
         else
-            return message.substring(Math.min(index, length));
+            return message.substring(0, Math.min(index, length));
     }
 
     public static String log(TunnelProto.TunnelCommand tunnelCommand) {
