@@ -68,8 +68,6 @@ public class ProxyClientHandler extends ChannelInboundHandlerAdapter {
 
     public void close() {
         ProxyClientHandler proxyClientHandler = keyProxyClientHandlerMappings.remove(key);
-        if(proxyClientHandler == null)
-            LOGGER.warn("key {} not found in mappings", key);
         ctx.close();
         proxyClient.close();
         LOGGER.info("Porxy Client closed");
