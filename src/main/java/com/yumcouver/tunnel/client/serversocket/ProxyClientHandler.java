@@ -63,11 +63,14 @@ public class ProxyClientHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause)
             throws Exception {
+        keyProxyClientHandlerMappings.remove(key);
+        ctx.close();
+        proxyClient.close();
         LOGGER.catching(cause);
     }
 
     public void close() {
-        ProxyClientHandler proxyClientHandler = keyProxyClientHandlerMappings.remove(key);
+        keyProxyClientHandlerMappings.remove(key);
         ctx.close();
         proxyClient.close();
         LOGGER.info("Porxy Client closed");

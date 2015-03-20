@@ -128,6 +128,7 @@ public class TCPTunnelClientEndpoint {
                 String destinationIp = "127.0.0.1";
                 if(tunnelCommand.hasDestinationIP())
                     destinationIp = tunnelCommand.getDestinationIP();
+                // TODO handle connection refused
                 new ProxyClient(destinationIp, destinationPort,
                         getKey(sourceId, sourcePort));
                 while(ProxyClientHandler

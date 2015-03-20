@@ -61,8 +61,8 @@ public class RequestHandler extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         final ByteBuf in = (ByteBuf) msg;
         final byte[] messageBytes = in.toString(io.netty.util.CharsetUtil.US_ASCII).getBytes();
-        ListeningServer.getInstance().send(port, messageBytes);
         LOGGER.info("Received message {}", Wireshark.getSubstring(new String(messageBytes)));
+        ListeningServer.getInstance().send(port, messageBytes);
         ReferenceCountUtil.release(msg);
     }
 
