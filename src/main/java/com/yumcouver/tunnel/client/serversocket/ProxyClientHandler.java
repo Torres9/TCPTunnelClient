@@ -83,7 +83,7 @@ public class ProxyClientHandler extends ChannelInboundHandlerAdapter {
                 assert f == future;
             }
         });
-        LOGGER.info("Sent message {}", message);
+        LOGGER.info("Sent message {}", message.substring(10));
     }
 
      @Override
@@ -101,7 +101,7 @@ public class ProxyClientHandler extends ChannelInboundHandlerAdapter {
                 .setMessage(ByteString.copyFromUtf8(message))
                 .build();
          TCPTunnelClientEndpoint.getInstance().send(tunnelCommand);
-         LOGGER.info("Received message {}", message);
+         LOGGER.info("Received message {}", message.substring(10));
          ReferenceCountUtil.release(msg);
     }
 }

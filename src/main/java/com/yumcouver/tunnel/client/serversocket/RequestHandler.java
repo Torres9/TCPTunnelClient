@@ -36,7 +36,7 @@ public class RequestHandler extends ChannelInboundHandlerAdapter {
     public void respond(String string) {
         ChannelFuture cf = ctx.write(Unpooled.copiedBuffer(string, CharsetUtil.UTF_8));
         ctx.flush();
-        LOGGER.info("Sent message {}", string);
+        LOGGER.info("Sent message {}", string.substring(10));
     }
 
     @Override
@@ -61,7 +61,7 @@ public class RequestHandler extends ChannelInboundHandlerAdapter {
         final ByteBuf in = (ByteBuf) msg;
         final byte[] messageBytes = in.toString(io.netty.util.CharsetUtil.US_ASCII).getBytes();
         ListeningServer.getInstance().send(port, messageBytes);
-        LOGGER.info("Received message {}", new String(messageBytes));
+        LOGGER.info("Received message {}", new String(messageBytes).substring(10));
         ReferenceCountUtil.release(msg);
     }
 

@@ -37,12 +37,12 @@ public class Wireshark {
         if(tunnelCommand.hasDestinationPort())
             stringBuilder.append(String.format("DESTINATION_PORT: %d\n",
                     tunnelCommand.getDestinationPort()));
-//        if(tunnelCommand.hasMessage()) {
-//            String message = tunnelCommand.getMessage().toStringUtf8();
-//            if(!message.isEmpty()) {
-//                stringBuilder.append(String.format("MESSAGE: %s\n", message));
-//            }
-//        }
+        if(tunnelCommand.hasMessage()) {
+            String message = tunnelCommand.getMessage().toStringUtf8();
+            if(!message.isEmpty()) {
+                stringBuilder.append(String.format("MESSAGE: %s\n", message.substring(10)));
+            }
+        }
         stringBuilder.append(header);
         return stringBuilder.toString();
     }
