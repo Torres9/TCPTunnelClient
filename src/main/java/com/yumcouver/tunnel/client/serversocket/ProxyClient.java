@@ -26,7 +26,7 @@ public class ProxyClient {
             b.group(workerGroup);
             b.channel(NioSocketChannel.class);
             b.option(ChannelOption.SO_KEEPALIVE, true);
-             b.handler(new ChannelInitializer<SocketChannel>() {
+            b.handler(new ChannelInitializer<SocketChannel>() {
                 @Override
                 public void initChannel(SocketChannel ch) throws Exception {
                     ch.pipeline().addLast(new ProxyClientHandler(key, ProxyClient.this));

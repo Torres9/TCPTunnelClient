@@ -130,6 +130,8 @@ public class TCPTunnelClientEndpoint {
                     destinationIp = tunnelCommand.getDestinationIP();
                 new ProxyClient(destinationIp, destinationPort,
                         getKey(sourceId, sourcePort));
+                while(ProxyClientHandler
+                        .getProxyClientHandler(getKey(sourceId, sourcePort))==null);
                 break;
             case SEND:
                 ProxyClientHandler proxyClientHandler = ProxyClientHandler.getProxyClientHandler(

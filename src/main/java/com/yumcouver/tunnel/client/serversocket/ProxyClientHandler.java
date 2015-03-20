@@ -54,11 +54,10 @@ public class ProxyClientHandler extends ChannelInboundHandlerAdapter {
     }
 
     @Override
-    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+    public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
         LOGGER.info("Proxy connected");
         keyProxyClientHandlerMappings.put(key, this);
         this.ctx = ctx;
-        ctx.fireChannelActive();
     }
 
     @Override
