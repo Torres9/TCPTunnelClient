@@ -146,8 +146,8 @@ public class TCPTunnelClientEndpoint {
                 proxyClientHandler = ProxyClientHandler.getProxyClientHandler(
                         getKey(sourceId, sourcePort)
                 );
-                assert proxyClientHandler != null;
-                proxyClientHandler.close();
+                if(proxyClientHandler != null)
+                    proxyClientHandler.close();
                 break;
             case ERROR:
                 LOGGER.error(tunnelCommand.getMessage().toStringUtf8());
