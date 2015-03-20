@@ -123,7 +123,7 @@ public class TCPTunnelClientEndpoint {
             case ID:
                 setSessionId(tunnelCommand.getMessage().toStringUtf8());
                 break;
-            case SYN:
+            case CLIENT_SYN:
                 int destinationPort = tunnelCommand.getDestinationPort();
                 String destinationIp = "127.0.0.1";
                 if(tunnelCommand.hasDestinationIP())
@@ -142,7 +142,7 @@ public class TCPTunnelClientEndpoint {
                 RequestHandler.respond(tunnelCommand.getDestinationPort(),
                         tunnelCommand.getMessage().toStringUtf8());
                 break;
-            case FIN:
+            case CLIENT_FIN:
                 proxyClientHandler = ProxyClientHandler.getProxyClientHandler(
                         getKey(sourceId, sourcePort)
                 );
