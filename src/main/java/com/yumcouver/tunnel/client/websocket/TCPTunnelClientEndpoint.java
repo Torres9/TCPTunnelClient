@@ -120,6 +120,7 @@ public class TCPTunnelClientEndpoint {
         int sourcePort = tunnelCommand.getSourcePort();
         String sourceId = tunnelCommand.getSourceId();
         switch (tunnelCommand.getMethod()) {
+            // TODO case SEVER_FIN:
             case ID:
                 setSessionId(tunnelCommand.getMessage().toStringUtf8());
                 break;
