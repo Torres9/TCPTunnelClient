@@ -10,7 +10,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
 public class TCPTunnelClient {
-    public static final boolean DEBUG_MODE = true;
+    public static final boolean DEBUG_MODE = false;
     private static final String VERSION = "0.1.0-SNAPSHOT";
 
     private static final Logger LOGGER = LogManager.getLogger(TCPTunnelClient.class);
