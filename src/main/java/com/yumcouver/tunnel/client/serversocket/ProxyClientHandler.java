@@ -9,11 +9,11 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.util.CharsetUtil;
 import io.netty.util.ReferenceCountUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.ByteArrayOutputStream;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -41,11 +41,11 @@ public class ProxyClientHandler extends ChannelInboundHandlerAdapter {
             proxyClientHandler.close();
     }
 
-     public static void closeAllConnections() {
+    public static void closeAllConnections() {
         for (ProxyClientHandler proxyClientHandler : keyProxyClientHandlerMappings.values())
             proxyClientHandler.close();
         keyProxyClientHandlerMappings =
-            new ConcurrentHashMap<>();
+                new ConcurrentHashMap<>();
     }
 
     public ProxyClientHandler(String key, ProxyClient proxyClient) {
@@ -76,9 +76,9 @@ public class ProxyClientHandler extends ChannelInboundHandlerAdapter {
         LOGGER.info("Porxy Client closed");
     }
 
-    public void write(String message) {
-        final ByteBuf byteBuf = ctx.alloc().buffer(message.length());
-        byteBuf.writeBytes(message.getBytes());
+    public void write(byte[] message) {
+        final ByteBuf byteBuf = ctx.alloc().buffer(message.length);
+        byteBuf.writeBytes(message);
         final ChannelFuture f = ctx.writeAndFlush(byteBuf);
         f.addListener(new ChannelFutureListener() {
             @Override
@@ -86,13 +86,19 @@ public class ProxyClientHandler extends ChannelInboundHandlerAdapter {
                 assert f == future;
             }
         });
-        LOGGER.info("Sent message {}", Wireshark.getSubstring(message));
+        LOGGER.info("Sent message {}", Wireshark.getSubstring(new String(message)));
     }
 
-     @Override
+    @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         final ByteBuf byteBuf = (ByteBuf) msg;
-        String message = byteBuf.toString(CharsetUtil.UTF_8);
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+
+        while(byteBuf.isReadable()) {
+            byteArrayOutputStream.write(byteBuf.readByte());
+        }
+        byte[] message = byteArrayOutputStream.toByteArray();
+        LOGGER.info("Received message {}", Wireshark.getSubstring(new String(message)));
         TunnelProto.TunnelCommand tunnelCommand = TunnelProto.TunnelCommand.newBuilder()
                 .setMethod(TunnelProto.TunnelCommand.Method.ACK)
                 .setSourceType(TunnelProto.TunnelCommand.EndType.CLIENT)
@@ -101,10 +107,9 @@ public class ProxyClientHandler extends ChannelInboundHandlerAdapter {
                 .setDestinationType(TunnelProto.TunnelCommand.EndType.CLIENT)
                 .setDestinationId(TCPTunnelClientEndpoint.getSessionId(key))
                 .setDestinationPort(TCPTunnelClientEndpoint.getPort(key))
-                .setMessage(ByteString.copyFromUtf8(message))
+                .setMessage(ByteString.copyFrom(message))
                 .build();
-         TCPTunnelClientEndpoint.getInstance().send(tunnelCommand);
-         LOGGER.info("Received message {}", Wireshark.getSubstring(message));
-         ReferenceCountUtil.release(msg);
+        TCPTunnelClientEndpoint.getInstance().send(tunnelCommand);
+        ReferenceCountUtil.release(msg);
     }
 }

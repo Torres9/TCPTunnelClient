@@ -18,6 +18,8 @@ import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+// TODO TCPTunnelClientEndpoint - a closed, reason: PROTOCOL_ERROR
+// IllegalStateException: The connection has been closed.
 @ClientEndpoint
 public class TCPTunnelClientEndpoint {
     private static final Logger LOGGER = LogManager.getLogger(TCPTunnelClientEndpoint.class);
@@ -139,12 +141,11 @@ public class TCPTunnelClientEndpoint {
                 ProxyClientHandler proxyClientHandler = ProxyClientHandler.getProxyClientHandler(
                         getKey(sourceId, sourcePort)
                 );
-                assert proxyClientHandler != null;
-                proxyClientHandler.write(tunnelCommand.getMessage().toStringUtf8());
+                proxyClientHandler.write(tunnelCommand.getMessage().toByteArray());
                 break;
             case ACK:
                 RequestHandler.respond(tunnelCommand.getDestinationPort(),
-                        tunnelCommand.getMessage().toStringUtf8());
+                        tunnelCommand.getMessage().toByteArray());
                 break;
             case CLIENT_FIN:
                 proxyClientHandler = ProxyClientHandler.getProxyClientHandler(

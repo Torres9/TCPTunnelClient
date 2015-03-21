@@ -3,14 +3,13 @@ package com.yumcouver.tunnel.client.serversocket;
 import com.yumcouver.tunnel.client.util.Wireshark;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.util.CharsetUtil;
 import io.netty.util.ReferenceCountUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.ByteArrayOutputStream;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
@@ -25,19 +24,20 @@ public class RequestHandler extends ChannelInboundHandlerAdapter {
     private int port;
     private ChannelHandlerContext ctx;
 
-    public static void respond(int port, String string) {
+    public static void respond(int port, byte[] message) {
         RequestHandler requestHandler = portConnectionMappings.get(port);
         if (requestHandler != null) {
-            requestHandler.respond(string);
+            requestHandler.respond(message);
         } else
             LOGGER.warn("Port {} not found in mappings", port);
     }
 
     // TODO ctx.channel
-    public void respond(String message) {
-        ChannelFuture cf = ctx.write(Unpooled.copiedBuffer(message, CharsetUtil.UTF_8));
+    public void respond(byte[] message) {
+        ByteBuf byteBuf = Unpooled.copiedBuffer(message);
+        ctx.write(byteBuf);
         ctx.flush();
-        LOGGER.info("Sent message {}", Wireshark.getSubstring(message));
+        LOGGER.info("Sent message {}", Wireshark.getSubstring(new String(message)));
     }
 
     @Override
@@ -46,7 +46,7 @@ public class RequestHandler extends ChannelInboundHandlerAdapter {
         if(portConnectionMappings.size() == MAX_CONNECTION)
             ctx.close();
         while(true) {
-            int port = random.nextInt(MAX_CONNECTION);
+            int port = random.nextInt(MAX_CONNECTION-1) + 1;
             if(!portConnectionMappings.containsKey(port)) {
                 this.port = port;
                 portConnectionMappings.put(port, this);
@@ -54,15 +54,19 @@ public class RequestHandler extends ChannelInboundHandlerAdapter {
             }
         }
         ListeningServer.getInstance().sendSYN(port);
+        // TODO wait until success
         LOGGER.info("Client {} connected", port);
     }
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         final ByteBuf in = (ByteBuf) msg;
-        final byte[] messageBytes = in.toString(io.netty.util.CharsetUtil.US_ASCII).getBytes();
-        LOGGER.info("Received message {}", Wireshark.getSubstring(new String(messageBytes)));
-        ListeningServer.getInstance().send(port, messageBytes);
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        while(in.isReadable())
+            byteArrayOutputStream.write(in.readByte());
+        byte[] message = byteArrayOutputStream.toByteArray();
+        LOGGER.info("Received message {}", Wireshark.getSubstring(new String(message)));
+        ListeningServer.getInstance().send(port, message);
         ReferenceCountUtil.release(msg);
     }
 
