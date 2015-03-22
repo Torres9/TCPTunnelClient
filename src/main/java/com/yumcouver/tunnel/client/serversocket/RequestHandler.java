@@ -32,7 +32,6 @@ public class RequestHandler extends ChannelInboundHandlerAdapter {
             LOGGER.warn("Port {} not found in mappings", port);
     }
 
-    // TODO ctx.channel
     public void respond(byte[] message) {
         ByteBuf byteBuf = Unpooled.copiedBuffer(message);
         ctx.write(byteBuf);

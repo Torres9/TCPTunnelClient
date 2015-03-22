@@ -14,7 +14,7 @@ public class TCPTunnelClient {
     private static final String VERSION = "0.1.0-SNAPSHOT";
 
     private static final Logger LOGGER = LogManager.getLogger(TCPTunnelClient.class);
-    private static TCPTunnelClient ourInstance = new TCPTunnelClient();
+    private static final TCPTunnelClient ourInstance = new TCPTunnelClient();
 
     public static TCPTunnelClient getInstance() {
         return ourInstance;
@@ -62,7 +62,7 @@ public class TCPTunnelClient {
             } else if (nextLine.toLowerCase().startsWith("open")) {
                 String destinationId =
                         nextLine.toLowerCase().substring(5).split("\\s+")[0];
-                int port = -1;
+                int port;
                 String destinationIp = ConfigReader.DEFAULT_DESTINATION_IP;
                 if (nextLine.toLowerCase().substring(5).split("\\s+").length == 2)
                     try {

@@ -73,7 +73,7 @@ public class ProxyClientHandler extends ChannelInboundHandlerAdapter {
         keyProxyClientHandlerMappings.remove(key);
         ctx.close();
         proxyClient.close();
-        LOGGER.info("Porxy Client closed");
+        LOGGER.info("Proxy Client closed");
     }
 
     public void write(byte[] message) {

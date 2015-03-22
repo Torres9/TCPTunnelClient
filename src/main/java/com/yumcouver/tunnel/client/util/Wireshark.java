@@ -5,7 +5,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class Wireshark {
-    private static final Logger LOGGER = LogManager.getLogger(Wireshark.class);
     private static final int DEBUG_MESSAGE_LENGTH = 50;
 
     public Wireshark() {

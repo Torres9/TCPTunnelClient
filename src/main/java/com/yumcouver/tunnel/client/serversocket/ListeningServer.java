@@ -18,7 +18,7 @@ import java.io.IOException;
 
 public class ListeningServer implements Runnable {
     private static final Logger LOGGER = LogManager.getLogger(ListeningServer.class);
-    private static ListeningServer ourInstance = new ListeningServer();
+    private final static ListeningServer ourInstance = new ListeningServer();
     private static final boolean OPEN = true;
     private static final boolean CLOSE = false;
 

@@ -32,8 +32,6 @@ public class TCPTunnelClientEndpoint {
     private Session session;
     private String sessionId;
     private String prefixOfSessionId;
-    private final Wireshark writeStreamWireshark = new Wireshark();
-    private final Wireshark readStreamWireshark = new Wireshark();
 
     public static String getKey(String sessionId, int port) {
         return sessionId + DELIMITER + port;
@@ -74,8 +72,7 @@ public class TCPTunnelClientEndpoint {
         LOGGER.info("Set session id: {}", prefixOfSessionId);
     }
 
-    private TunnelProto.TunnelCommand errorMessage(String errorCode)
-            throws IOException {
+    private TunnelProto.TunnelCommand errorMessage(String errorCode) {
         return TunnelProto.TunnelCommand.newBuilder()
                 .setMethod(TunnelProto.TunnelCommand.Method.ERROR)
                 .setSourceType(TunnelProto.TunnelCommand.EndType.SERVER)
