@@ -94,7 +94,7 @@ public class ProxyClientHandler extends ChannelInboundHandlerAdapter {
         final ByteBuf byteBuf = (ByteBuf) msg;
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
-        while(byteBuf.isReadable()) {
+        while (byteBuf.isReadable()) {
             byteArrayOutputStream.write(byteBuf.readByte());
         }
         byte[] message = byteArrayOutputStream.toByteArray();

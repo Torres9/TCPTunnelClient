@@ -129,13 +129,13 @@ public class TCPTunnelClientEndpoint {
             case CLIENT_SYN:
                 int destinationPort = tunnelCommand.getDestinationPort();
                 String destinationIp = "127.0.0.1";
-                if(tunnelCommand.hasDestinationIP())
+                if (tunnelCommand.hasDestinationIP())
                     destinationIp = tunnelCommand.getDestinationIP();
                 // TODO handle connection refused
                 new ProxyClient(destinationIp, destinationPort,
                         getKey(sourceId, sourcePort));
-                while(ProxyClientHandler
-                        .getProxyClientHandler(getKey(sourceId, sourcePort))==null);
+                while (ProxyClientHandler
+                        .getProxyClientHandler(getKey(sourceId, sourcePort)) == null) ;
                 break;
             case SEND:
                 ProxyClientHandler proxyClientHandler = ProxyClientHandler.getProxyClientHandler(
@@ -151,7 +151,7 @@ public class TCPTunnelClientEndpoint {
                 proxyClientHandler = ProxyClientHandler.getProxyClientHandler(
                         getKey(sourceId, sourcePort)
                 );
-                if(proxyClientHandler != null)
+                if (proxyClientHandler != null)
                     proxyClientHandler.close();
                 break;
             case ERROR:

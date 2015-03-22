@@ -43,11 +43,11 @@ public class RequestHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
         this.ctx = ctx;
-        if(portConnectionMappings.size() == MAX_CONNECTION)
+        if (portConnectionMappings.size() == MAX_CONNECTION)
             ctx.close();
-        while(true) {
-            int port = random.nextInt(MAX_CONNECTION-1) + 1;
-            if(!portConnectionMappings.containsKey(port)) {
+        while (true) {
+            int port = random.nextInt(MAX_CONNECTION - 1) + 1;
+            if (!portConnectionMappings.containsKey(port)) {
                 this.port = port;
                 portConnectionMappings.put(port, this);
                 break;
@@ -62,7 +62,7 @@ public class RequestHandler extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         final ByteBuf in = (ByteBuf) msg;
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        while(in.isReadable())
+        while (in.isReadable())
             byteArrayOutputStream.write(in.readByte());
         byte[] message = byteArrayOutputStream.toByteArray();
         LOGGER.info("Received message {}", Wireshark.getSubstring(new String(message)));

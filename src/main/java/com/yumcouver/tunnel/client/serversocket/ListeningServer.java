@@ -1,11 +1,9 @@
 package com.yumcouver.tunnel.client.serversocket;
 
 import com.google.protobuf.ByteString;
-import com.yumcouver.tunnel.client.TCPTunnelClient;
 import com.yumcouver.tunnel.client.protobuf.TunnelProto;
 import com.yumcouver.tunnel.client.util.ConfigReader;
 import com.yumcouver.tunnel.client.websocket.TCPTunnelClientEndpoint;
-
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
@@ -13,7 +11,6 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

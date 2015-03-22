@@ -47,7 +47,7 @@ public class TCPTunnelClient {
         System.out.format("TCPTunnelClient %s\n" +
                 "Type \"help\" for more information.\n", VERSION);
 
-        while(TCPTunnelClientEndpoint.getInstance().getSessionId().equals(
+        while (TCPTunnelClientEndpoint.getInstance().getSessionId().equals(
                 TCPTunnelClientEndpoint.UNKOWN_ID))
             Thread.sleep(500);
         System.out.format("Get client unique ID: %s\n>>> ",
@@ -85,7 +85,7 @@ public class TCPTunnelClient {
                 ourInstance.openConnection(destinationId, destinationIp, port);
             } else if (nextLine.toLowerCase().equals("help")) {
                 System.out.print("open\tclose\texit\n>>> ");
-            } else if (nextLine.replaceAll("\\\\s+","").equals(""))
+            } else if (nextLine.replaceAll("\\\\s+", "").equals(""))
                 System.out.print(">>> ");
             else
                 System.out.print("Unrecognized input\n>>> ");
