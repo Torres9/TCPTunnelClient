@@ -8,7 +8,7 @@
     <artifactId>TCPTunnelClient</artifactId>
     <version>0.2.0-SNAPSHOT</version>
 
-     <properties>
+    <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
