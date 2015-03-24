@@ -31,7 +31,8 @@ public class TunnelHandler extends ClientHandler {
     }
 
     public static void main(String args[]) throws IOException {
-        new TunnelHandler();
+        TunnelHandler tunnelHandler = new TunnelHandler();
         System.in.read();
+        tunnelHandler.shutdown();
     }
 }
