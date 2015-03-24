@@ -5,7 +5,7 @@ import com.yumcouver.tunnel.client.protobuf.TunnelProto;
 import com.yumcouver.tunnel.client.tunnel.TunnelHandler;
 import com.yumcouver.tunnel.client.util.ClientHandlerAdapter;
 
-public class ControllerClientHandlerAdapter extends ClientHandlerAdapter{
+public class ControllerClientHandlerAdapter extends ClientHandlerAdapter {
     private boolean initialized = false;
 
     private static byte[] errorMessage(String errorMessage) {
@@ -30,7 +30,8 @@ public class ControllerClientHandlerAdapter extends ClientHandlerAdapter{
                     break;
                 case SYN:
                     assert initialized;
-                    new TunnelHandler();
+                    TunnelHandler tunnelHandler = new TunnelHandler();
+                    ControllerClientHandler.getInstance().addTunnelHandler(tunnelHandler);
                     break;
                 default:
                     LOGGER.warn("Unrecognized method");
@@ -51,10 +52,5 @@ public class ControllerClientHandlerAdapter extends ClientHandlerAdapter{
     @Override
     public void disconnectEvent() {
         ControllerClientHandler.getInstance().shutdown();
-    }
-
-    @Override
-    public void shutdownEvent() {
-
     }
 }

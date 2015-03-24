@@ -38,9 +38,4 @@ class ExtendedClientHandlerAdapter extends ClientHandlerAdapter {
     public void disconnectEvent() {
 
     }
-
-    @Override
-    public void shutdownEvent() {
-
-    }
 }

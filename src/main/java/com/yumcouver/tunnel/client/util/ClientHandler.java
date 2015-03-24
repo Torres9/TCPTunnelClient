@@ -33,17 +33,16 @@ public abstract class ClientHandler {
         try {
             bootstrap.connect(host, port).sync();
         } catch (Exception e) {
-            if(e instanceof ConnectException) {
+            if (e instanceof ConnectException) {
                 LOGGER.error(e.getLocalizedMessage());
                 clientHandlerAdapter.setConnectionRefused();
-            }
-            else
+            } else
                 LOGGER.catching(e);
         }
     }
 
     public synchronized void shutdown() {
-        if(clientHandlerAdapter.isConnected()) {
+        if (clientHandlerAdapter.isConnected()) {
             clientHandlerAdapter.shutdown();
             workerGroup.shutdownGracefully();
         }

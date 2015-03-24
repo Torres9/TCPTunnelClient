@@ -24,7 +24,6 @@ public abstract class ClientHandlerAdapter extends ChannelInboundHandlerAdapter 
                 ctx = null;
             }
         }
-        shutdownEvent();
     }
 
     public void write(byte[] messageBytes) {
@@ -105,6 +104,4 @@ public abstract class ClientHandlerAdapter extends ChannelInboundHandlerAdapter 
     public abstract void connectEvent();
 
     public abstract void disconnectEvent();
-
-    public abstract void shutdownEvent();
 }

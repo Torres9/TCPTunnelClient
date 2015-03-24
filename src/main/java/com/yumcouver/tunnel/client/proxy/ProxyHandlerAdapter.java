@@ -1,5 +1,6 @@
 package com.yumcouver.tunnel.client.proxy;
 
+import com.yumcouver.tunnel.client.controller.ControllerClientHandler;
 import com.yumcouver.tunnel.client.tunnel.TunnelHandler;
 import com.yumcouver.tunnel.client.util.ClientHandlerAdapter;
 
@@ -17,30 +18,27 @@ public class ProxyHandlerAdapter extends ClientHandlerAdapter {
 
     @Override
     public void connectEvent() {
-        while(!tunnelHandler.isConnectionRefused() && !tunnelHandler.isConnected()) {
+        while (!tunnelHandler.isConnectionRefused() && !tunnelHandler.isConnected()) {
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
                 LOGGER.catching(e);
             }
         }
-        if(tunnelHandler.isConnectionRefused())
+        if (tunnelHandler.isConnectionRefused())
             tunnelHandler.shutdown();
     }
 
     @Override
     public void disconnectEvent() {
         tunnelHandler.shutdown();
-        while(isConnected() || tunnelHandler.isConnected()) {
+        while (isConnected() || tunnelHandler.isConnected()) {
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
                 LOGGER.catching(e);
             }
         }
-    }
-
-    @Override
-    public void shutdownEvent() {
+        ControllerClientHandler.getInstance().removeTunnelHandler(tunnelHandler);
     }
 }

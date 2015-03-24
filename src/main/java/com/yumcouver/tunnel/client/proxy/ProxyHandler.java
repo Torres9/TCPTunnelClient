@@ -4,8 +4,8 @@ import com.yumcouver.tunnel.client.tunnel.TunnelHandler;
 import com.yumcouver.tunnel.client.util.ClientHandler;
 import com.yumcouver.tunnel.client.util.ConfigReader;
 
-public class ProxyHandler extends ClientHandler{
-    private TunnelHandler tunnelHandler;
+public class ProxyHandler extends ClientHandler {
+    private final TunnelHandler tunnelHandler;
 
     public ProxyHandler(TunnelHandler tunnelHandler) {
         super(ConfigReader.DESTINATION_HOST,
@@ -16,11 +16,11 @@ public class ProxyHandler extends ClientHandler{
 
     @Override
     public synchronized void shutdown() {
-        while(clientHandlerAdapter.isConnected()) {
+        while (clientHandlerAdapter.isConnected()) {
             clientHandlerAdapter.shutdown();
             workerGroup.shutdownGracefully();
         }
-        while(tunnelHandler != null && tunnelHandler.isConnected()) {
+        while (tunnelHandler != null && tunnelHandler.isConnected()) {
             tunnelHandler.shutdown();
         }
     }

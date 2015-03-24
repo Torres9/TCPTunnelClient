@@ -12,7 +12,7 @@ public class TunnelHandlerAdapter extends ClientHandlerAdapter {
 
     public TunnelHandlerAdapter() {
         tunnelId = count;
-        count ++;
+        count++;
     }
 
     public void setProxyHandler(ProxyHandler proxyHandler) {
@@ -33,14 +33,14 @@ public class TunnelHandlerAdapter extends ClientHandlerAdapter {
                 LOGGER.catching(e);
             }
         }
-        while(!proxyHandler.isConnectionRefused() && !proxyHandler.isConnected()) {
+        while (!proxyHandler.isConnectionRefused() && !proxyHandler.isConnected()) {
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
                 LOGGER.catching(e);
             }
         }
-        if(proxyHandler.isConnectionRefused())
+        if (proxyHandler.isConnectionRefused())
             proxyHandler.shutdown();
         TunnelProto.TunnelCommand tunnelCommand = TunnelProto.TunnelCommand.newBuilder()
                 .setMethod(TunnelProto.TunnelCommand.Method.TUNNEL_INIT)
@@ -52,16 +52,12 @@ public class TunnelHandlerAdapter extends ClientHandlerAdapter {
     @Override
     public void disconnectEvent() {
         proxyHandler.shutdown();
-        while(isConnected() || proxyHandler.isConnected()) {
+        while (isConnected() || proxyHandler.isConnected()) {
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
                 LOGGER.catching(e);
             }
         }
-    }
-
-    @Override
-    public void shutdownEvent() {
     }
 }
