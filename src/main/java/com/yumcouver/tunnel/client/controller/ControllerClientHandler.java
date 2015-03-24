@@ -24,7 +24,7 @@ public class ControllerClientHandler extends ClientHandler{
     }
 
     public void setControllerId(String controllerId) {
-        LOGGER.info("Set controller id to {}", controllerId);
+        LOGGER.info("Set controller id: {}", controllerId);
         this.controllerId = controllerId;
     }
 }

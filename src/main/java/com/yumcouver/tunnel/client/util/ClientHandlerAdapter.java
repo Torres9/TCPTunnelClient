@@ -34,7 +34,7 @@ public abstract class ClientHandlerAdapter extends ChannelInboundHandlerAdapter 
                 ctx.write(messageByteBuf);
                 ctx.flush();
                 if (TCPTunnelClient.DEBUG_MODE)
-                    LOGGER.debug("Sent message {}", Wireshark.getSubstring(messageBytes));
+                    LOGGER.debug("Sent message: {}", Wireshark.getSubstring(messageBytes));
             } else
                 LOGGER.warn("Not connected");
         }
@@ -72,7 +72,7 @@ public abstract class ClientHandlerAdapter extends ChannelInboundHandlerAdapter 
             byteArrayOutputStream.write(messageByteBuf.readByte());
         final byte[] messageBytes = byteArrayOutputStream.toByteArray();
         if (TCPTunnelClient.DEBUG_MODE)
-            LOGGER.debug("Received message {}", Wireshark.getSubstring(messageBytes));
+            LOGGER.debug("Received message: {}", Wireshark.getSubstring(messageBytes));
         readEvent(messageBytes);
         ReferenceCountUtil.release(msg);
     }
