@@ -32,7 +32,7 @@ public class ControllerClientHandlerAdapter extends ClientHandlerAdapter {
                     ControllerClientHandler.getInstance()
                             .setControllerId(controllerId);
                     System.out.format("Forwarding server listening on %s:%d\n",
-                            ConfigReader.DESTINATION_HOST, port);
+                            ConfigReader.TCP_TUNNEL_SERVER_HOST, port);
                     initialized = true;
                     break;
                 case SYN:
