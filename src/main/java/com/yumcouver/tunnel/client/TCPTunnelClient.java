@@ -7,7 +7,7 @@ import org.apache.logging.log4j.Logger;
 import java.io.IOException;
 
 public class TCPTunnelClient {
-    public static final boolean DEBUG_MODE = true;
+    public static final boolean DEBUG_MODE = false;
 
     private static final Logger LOGGER = LogManager.getLogger(TCPTunnelClient.class);
     private static final TCPTunnelClient ourInstance = new TCPTunnelClient();
