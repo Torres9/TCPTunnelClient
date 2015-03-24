@@ -39,8 +39,8 @@ public class ControllerClientHandler extends ClientHandler {
     public synchronized void shutdown() {
         while (clientHandlerAdapter.isConnected()) {
             clientHandlerAdapter.shutdown();
-            workerGroup.shutdownGracefully();
         }
+        workerGroup.shutdownGracefully();
         for (TunnelHandler tunnelHandler : tunnelHandlers) {
             while (tunnelHandler.isConnected())
                 tunnelHandler.shutdown();

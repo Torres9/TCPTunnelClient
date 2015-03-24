@@ -21,8 +21,8 @@ public class TunnelHandler extends ClientHandler {
     public synchronized void shutdown() {
         while (clientHandlerAdapter.isConnected()) {
             clientHandlerAdapter.shutdown();
-            workerGroup.shutdownGracefully();
         }
+        workerGroup.shutdownGracefully();
         while (proxyHandler != null && proxyHandler.isConnected()) {
             proxyHandler.shutdown();
         }

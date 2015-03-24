@@ -1,6 +1,7 @@
 package com.yumcouver.tunnel.client.util;
 
 import io.netty.bootstrap.Bootstrap;
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
@@ -16,6 +17,7 @@ public abstract class ClientHandler {
     protected final Logger LOGGER = LogManager.getLogger(this.getClass());
     protected final EventLoopGroup workerGroup = new NioEventLoopGroup();
     protected final ClientHandlerAdapter clientHandlerAdapter;
+    protected ChannelFuture channelFuture;
 
     public ClientHandler(String host, int port, final ClientHandlerAdapter clientHandlerAdapter) {
         this.clientHandlerAdapter = clientHandlerAdapter;
@@ -31,7 +33,7 @@ public abstract class ClientHandler {
             }
         });
         try {
-            bootstrap.connect(host, port).sync();
+            channelFuture = bootstrap.connect(host, port).sync();
         } catch (Exception e) {
             if (e instanceof ConnectException) {
                 LOGGER.error(e.getLocalizedMessage());
@@ -42,10 +44,14 @@ public abstract class ClientHandler {
     }
 
     public synchronized void shutdown() {
-        if (clientHandlerAdapter.isConnected()) {
+        while (clientHandlerAdapter.isConnected()) {
             clientHandlerAdapter.shutdown();
-            workerGroup.shutdownGracefully();
         }
+        workerGroup.shutdownGracefully();
+    }
+
+    public void join() throws InterruptedException {
+        channelFuture.channel().closeFuture().sync();
     }
 
     public synchronized void write(byte[] messageBytes) {

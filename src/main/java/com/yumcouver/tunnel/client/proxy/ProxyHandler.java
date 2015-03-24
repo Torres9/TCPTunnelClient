@@ -18,8 +18,8 @@ public class ProxyHandler extends ClientHandler {
     public synchronized void shutdown() {
         while (clientHandlerAdapter.isConnected()) {
             clientHandlerAdapter.shutdown();
-            workerGroup.shutdownGracefully();
         }
+        workerGroup.shutdownGracefully();
         while (tunnelHandler != null && tunnelHandler.isConnected()) {
             tunnelHandler.shutdown();
         }
