@@ -9,7 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class ControllerClientHandler extends ClientHandler {
-    private static final String DELIMITER = "-";
+    public static final String DELIMITER = "-";
     private static final ControllerClientHandler ourInstance = new ControllerClientHandler();
     private static final List<TunnelHandler> tunnelHandlers = Collections.synchronizedList(
             new LinkedList<TunnelHandler>());

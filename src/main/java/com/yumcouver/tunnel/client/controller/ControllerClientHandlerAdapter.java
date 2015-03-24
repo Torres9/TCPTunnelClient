@@ -4,6 +4,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import com.yumcouver.tunnel.client.protobuf.TunnelProto;
 import com.yumcouver.tunnel.client.tunnel.TunnelHandler;
 import com.yumcouver.tunnel.client.util.ClientHandlerAdapter;
+import com.yumcouver.tunnel.client.util.ConfigReader;
 
 public class ControllerClientHandlerAdapter extends ClientHandlerAdapter {
     private boolean initialized = false;
@@ -24,8 +25,14 @@ public class ControllerClientHandlerAdapter extends ClientHandlerAdapter {
             switch (tunnelCommand.getMethod()) {
                 case CONTROLLER_INIT:
                     assert !initialized;
+                    String controllerId = tunnelCommand.getMessage()
+                            .split(ControllerClientHandler.DELIMITER)[0];
+                    int port = Integer.parseInt(tunnelCommand.getMessage()
+                            .split(ControllerClientHandler.DELIMITER)[1]);
                     ControllerClientHandler.getInstance()
-                            .setControllerId(tunnelCommand.getMessage());
+                            .setControllerId(controllerId);
+                    System.out.format("Forwarding server listening on %s:%d\n",
+                            ConfigReader.DESTINATION_HOST, port);
                     initialized = true;
                     break;
                 case SYN:
