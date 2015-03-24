@@ -19,7 +19,12 @@ public class TCPTunnelClient {
     private final ControllerClientHandler controllerClientHandler =
             ControllerClientHandler.getInstance();
 
+    public void shutdown() {
+        controllerClientHandler.shutdown();
+    }
+
     public static void main(String args[]) throws IOException {
         System.in.read();
+        ourInstance.shutdown();
     }
 }
